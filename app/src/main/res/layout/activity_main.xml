@@ -8,23 +8,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tự động chọn đơn hàng"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
     <EditText
-        android:id="@+id/order_match_criterion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập tiêu chí khớp đơn (VD: tên quán, địa chỉ)"
         android:layout_marginBottom="16dp" />
 
     <Switch
-        android:id="@+id/auto_select_enabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bật tự động chọn đơn"
         android:layout_marginBottom="16dp" />
 
     <Button
