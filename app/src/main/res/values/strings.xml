@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Automatically-receive-orders</string>
+    <string name="accessibility_service_description">Dịch vụ tự động nhận đơn hàng</string>
+</resources>
