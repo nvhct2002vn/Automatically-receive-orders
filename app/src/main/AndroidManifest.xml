@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
+
+    <uses-permission
+        android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -17,7 +19,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Automaticallyreceiveorders">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,13 +26,18 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyAccessibilityService"
+        <activity android:name=".SavedFiltersActivity">
+        </activity>
+
+        <service
+            android:name=".MyAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-            <meta-data android:name="android.accessibilityservice"
+            <meta-data
+                android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
     </application>

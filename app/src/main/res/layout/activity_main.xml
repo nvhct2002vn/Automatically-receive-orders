@@ -8,24 +8,68 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Tự động chọn đơn hàng"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/order_match_criterion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập tiêu chí khớp đơn (VD: tên quán, địa chỉ)"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:hint="Nhập tiêu chí khớp đơn (VD: tên quán, địa chỉ)" />
+
+    <EditText
+        android:id="@+id/order_match_criterion_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Nhập điều kiện thứ hai" />
+
+    <EditText
+        android:id="@+id/order_match_criterion_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Nhập điều kiện thứ ba" />
+
+    <!-- Thêm hai EditText mới cho khoảng cách -->
+    <EditText
+        android:id="@+id/min_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Nhập khoảng cách tối thiểu (km)"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/max_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Nhập khoảng cách tối đa (km)"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/open_saved_filters_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xem bộ lọc đã lưu" />
+
+    <Button
+        android:id="@+id/save_filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Lưu bộ lọc" />
 
     <Switch
         android:id="@+id/auto_select_enabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bật tự động chọn đơn"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:text="Bật tự động chọn đơn" />
 
     <Button
         android:id="@+id/enable_button"

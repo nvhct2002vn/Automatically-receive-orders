@@ -39,7 +39,13 @@ class FilterSettingsAdapter(
             details.append("Địa chỉ quán: ${filterSetting.restaurantAddress}\n")
         }
         if (filterSetting.deliveryArea.isNotEmpty()) {
-            details.append("Khu vực giao: ${filterSetting.deliveryArea}")
+            details.append("Khu vực giao: ${filterSetting.deliveryArea}\n")
+        }
+        if (filterSetting.minDistance.isNotEmpty()) {
+            details.append("Khoảng cách tối thiểu: ${filterSetting.minDistance} km\n")
+        }
+        if (filterSetting.maxDistance.isNotEmpty()) {
+            details.append("Khoảng cách tối đa: ${filterSetting.maxDistance} km")
         }
 
         holder.detailsText.text = details.toString()

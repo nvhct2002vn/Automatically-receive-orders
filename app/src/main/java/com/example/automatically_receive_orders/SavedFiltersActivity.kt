@@ -1,5 +1,6 @@
 package com.example.automatically_receive_orders
 
+import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
@@ -28,12 +29,8 @@ class SavedFiltersActivity : AppCompatActivity() {
 
         adapter = FilterSettingsAdapter(
             filterSettings,
-            onApplyClick = { filter ->
-                applyFilter(filter)
-            },
-            onDeleteClick = { filter ->
-                deleteFilter(filter)
-            }
+            onApplyClick = { filter -> applyFilter(filter) },
+            onDeleteClick = { filter -> deleteFilter(filter) }
         )
 
         recyclerView.adapter = adapter
@@ -46,17 +43,26 @@ class SavedFiltersActivity : AppCompatActivity() {
     }
 
     private fun applyFilter(filter: FilterSetting) {
-        // Lưu thiết lập hiện tại
         val editor = sharedPreferences.edit()
         editor.putString("current_filter_name", filter.name)
         editor.putString("restaurant_name", filter.restaurantName)
         editor.putString("restaurant_address", filter.restaurantAddress)
         editor.putString("delivery_area", filter.deliveryArea)
+        editor.putString("min_distance", filter.minDistance)
+        editor.putString("max_distance", filter.maxDistance)
         editor.putBoolean("filter_enabled", true)
+
+        editor.putString("match_criterion", filter.restaurantName)
+        editor.putString("match_criterion_2", filter.restaurantAddress)
+        editor.putString("match_criterion_3", filter.deliveryArea)
+        editor.putString("min_distance", filter.minDistance)
+        editor.putString("max_distance", filter.maxDistance)
         editor.apply()
 
-        Toast.makeText(this, "Đã áp dụng thiết lập: ${filter.name}", Toast.LENGTH_SHORT).show()
+        setResult(Activity.RESULT_OK)
         finish()
+
+        Toast.makeText(this, "Đã áp dụng bộ lọc: ${filter.name}", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteFilter(filter: FilterSetting) {

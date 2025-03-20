@@ -15,45 +15,131 @@ class MyAccessibilityService : AccessibilityService() {
         sharedPreferences = getSharedPreferences("AutoAcceptPrefs", MODE_PRIVATE)
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        val rootNode = rootInActiveWindow // Lấy root node của màn hình
-        if (rootNode != null) {
-            logAllTexts(rootNode) // Gọi hàm để quét và in văn bản
-        }
-//        --------------------------------------------------------------------------------------
-        // Lấy package name của sự kiện
-        val eventPackageName = event?.packageName?.toString()
-        val appPackageName = packageName // packageName là package name của ứng dụng chính
+//    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+//        val eventPackageName = event?.packageName?.toString()
+//        val appPackageName = packageName
+//
+//        if (eventPackageName == appPackageName) {
+//            Log.d(TAG, "Sự kiện từ ứng dụng chính, không thực hiện hành động")
+//            return
+//        }
+//
+//        val autoSelectEnabled = sharedPreferences.getBoolean("auto_select_enabled", false)
+//        val criterion1 = sharedPreferences.getString("match_criterion", "")?.trim()
+//        val criterion2 = sharedPreferences.getString("match_criterion_2", "")?.trim()
+//        val criterion3 = sharedPreferences.getString("match_criterion_3", "")?.trim()
+//        val minDistanceStr = sharedPreferences.getString("min_distance", "")?.trim()
+//        val maxDistanceStr = sharedPreferences.getString("max_distance", "")?.trim()
+//
+//        val criteria = listOfNotNull(criterion1, criterion2, criterion3).filter { it.isNotEmpty() }
+//        val minDistance = minDistanceStr?.toFloatOrNull()
+//        val maxDistance = maxDistanceStr?.toFloatOrNull()
+//
+//        if (autoSelectEnabled && (criteria.isNotEmpty() || minDistance != null || maxDistance != null)) {
+//            val rootNode = rootInActiveWindow
+//            if (rootNode != null) {
+//                val orderNodes = findOrderNodes(rootNode)
+//                for (orderNode in orderNodes) {
+//                    val distanceText = orderNode.findAccessibilityNodeInfosByText("km").firstOrNull()?.text?.toString()
+//                    val distance = distanceText?.replace("km", "")?.trim()?.toFloatOrNull()
+//                    val allTexts = getAllTexts(orderNode)
+//
+//                    // Kiểm tra khoảng cách
+//                    if (distance != null &&
+//                        (minDistance == null || distance >= minDistance) &&
+//                        (maxDistance == null || distance <= maxDistance)) {
+//                        // Kiểm tra các tiêu chí khác
+//                        val matchingTexts = allTexts.filter { text ->
+//                            criteria.any { criterion -> text.lowercase().contains(criterion.lowercase()) }
+//                        }
+//                        if (matchingTexts.isNotEmpty() || criteria.isEmpty()) {
+//                            // In thông tin chi tiết của đơn hàng
+//                            Log.d(TAG, "Đơn hàng khớp:")
+//                            Log.d(TAG, " - Khoảng cách: $distance km")
+//                            Log.d(TAG, " - Chi tiết: ${allTexts.joinToString(", ")}")
+//
+//                            val clicked = findAndClickNode(orderNode, criteria)
+//                            if (clicked) {
+//                                Log.d(TAG, "Đã nhấp vào đơn hàng với khoảng cách: $distance km")
+//                            } else {
+//                                Log.d(TAG, "Không nhấp được dù tìm thấy đơn hàng khớp")
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            Log.d(TAG, "Chưa bật tự động chọn đơn hoặc tất cả tiêu chí rỗng")
+//        }
+//    }
 
-        // Kiểm tra nếu sự kiện đến từ ứng dụng chính
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        val eventPackageName = event?.packageName?.toString()
+        val appPackageName = packageName
+
+        // Kiểm tra xem sự kiện có từ ứng dụng chính không
         if (eventPackageName == appPackageName) {
             Log.d(TAG, "Sự kiện từ ứng dụng chính, không thực hiện hành động")
-            return // Thoát khỏi hàm, không thực hiện bất kỳ hành động nào
+            return
         }
 
-        // Lấy các giá trị từ SharedPreferences
-        val autoSelectEnabled = sharedPreferences.getBoolean("auto_select_enabled", false)
-        val criterion = sharedPreferences.getString("match_criterion", "")?.trim()
+        // Lấy root node của màn hình hiện tại
+        val rootNode = rootInActiveWindow
+        if (rootNode != null) {
+            // In toàn bộ văn bản trên màn hình
+            val allScreenTexts = getAllTexts(rootNode)
+            Log.d(TAG, "Toàn bộ văn bản trên màn hình:")
+            allScreenTexts.forEach { text ->
+                Log.d(TAG, " - $text")
+            }
+            Log.d(TAG, "=============================")
 
-        // Tiếp tục xử lý nếu autoSelectEnabled bật và criterion không rỗng
-        if (autoSelectEnabled && !criterion.isNullOrEmpty()) {
-            val rootNode = rootInActiveWindow
-            if (rootNode != null) {
-                val clicked = findAndClickNode(rootNode, criterion)
-                if (clicked) {
-                    Log.d(TAG, "Đã nhấp vào phần tử khớp với tiêu chí: $criterion")
-                } else {
-                    Log.d(TAG, "Không tìm thấy phần tử khớp với tiêu chí: $criterion")
+            // Tìm và in thông tin các đơn hàng
+            val orderNodes = findOrderNodes(rootNode)
+            if (orderNodes.isNotEmpty()) {
+                Log.d(TAG, "Tìm thấy ${orderNodes.size} đơn hàng trên màn hình")
+                for ((index, orderNode) in orderNodes.withIndex()) {
+                    val allTexts = getAllTexts(orderNode)
+                    Log.d(TAG, "Đơn hàng ${index + 1}:")
+                    allTexts.forEach { text ->
+                        Log.d(TAG, " - $text")
+                    }
+                    Log.d(TAG, "-----------------------------")
                 }
+            } else {
+                Log.d(TAG, "Không tìm thấy đơn hàng nào trên màn hình")
             }
         } else {
-            Log.d(TAG, "Chưa bật tự động chọn đơn hoặc tiêu chí rỗng")
+            Log.d(TAG, "Không lấy được root node của màn hình")
         }
     }
 
-    private fun findAndClickNode(node: AccessibilityNodeInfo, criterion: String): Boolean {
+    private fun findOrderNodes(root: AccessibilityNodeInfo): List<AccessibilityNodeInfo> {
+        val orderNodes = mutableListOf<AccessibilityNodeInfo>()
+        val queue = mutableListOf(root)
+
+        while (queue.isNotEmpty()) {
+            val current = queue.removeAt(0)
+            if (current.className == "android.view.ViewGroup" && current.childCount > 0) {
+                val hasDistance = current.findAccessibilityNodeInfosByText("km").isNotEmpty()
+                val hasActionButton = current.findAccessibilityNodeInfosByText("접점 받을게요").isNotEmpty()
+                if (hasDistance && hasActionButton) {
+                    orderNodes.add(current)
+                }
+            }
+            for (i in 0 until current.childCount) {
+                val child = current.getChild(i)
+                if (child != null) {
+                    queue.add(child)
+                }
+            }
+        }
+        return orderNodes
+    }
+
+    private fun findAndClickNode(node: AccessibilityNodeInfo, criteria: List<String>): Boolean {
         val text = node.text?.toString()?.lowercase()
-        if (text != null && text.contains(criterion.lowercase())) {
+        if (text != null && criteria.any { text.contains(it.lowercase()) }) {
             if (node.isClickable) {
                 node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 Log.d(TAG, "Đã nhấp vào phần tử: $text")
@@ -73,7 +159,7 @@ class MyAccessibilityService : AccessibilityService() {
         for (i in 0 until node.childCount) {
             val child = node.getChild(i)
             if (child != null) {
-                if (findAndClickNode(child, criterion)) {
+                if (findAndClickNode(child, criteria)) {
                     return true
                 }
             }
@@ -81,21 +167,23 @@ class MyAccessibilityService : AccessibilityService() {
         return false
     }
 
-    // Hàm đệ quy để duyệt qua tất cả các node và in văn bản
-    private fun logAllTexts(node: AccessibilityNodeInfo) {
-        // Kiểm tra và in văn bản của node hiện tại
-        val text = node.text
-        if (!text.isNullOrEmpty()) {
-            Log.d(TAG, "Text: $text")
-        }
+    private fun getAllTexts(node: AccessibilityNodeInfo): List<String> {
+        val texts = mutableListOf<String>()
+        val queue = mutableListOf(node)
 
-        // Duyệt qua tất cả các node con
-        for (i in 0 until node.childCount) {
-            val child = node.getChild(i)
-            if (child != null) {
-                logAllTexts(child) // Đệ quy cho node con
+        while (queue.isNotEmpty()) {
+            val current = queue.removeAt(0)
+            if (current.text?.isNotBlank() == true) {
+                texts.add(current.text.toString())
+            }
+            for (i in 0 until current.childCount) {
+                val child = current.getChild(i)
+                if (child != null) {
+                    queue.add(child)
+                }
             }
         }
+        return texts
     }
 
     override fun onInterrupt() {
